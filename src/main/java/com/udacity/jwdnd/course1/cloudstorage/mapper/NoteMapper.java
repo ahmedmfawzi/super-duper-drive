@@ -10,10 +10,13 @@ import java.util.List;
 
 @Mapper
 public interface NoteMapper {
-    @Select("SELECT * FORM MESSAGES")
+    @Select("SELECT * FROM NOTES")
     List<Note> getAllNotes();
 
-    @Insert("INSERT INTO NOTE (noteTitle, noteDescription, username) VALUES (#{noteTitle}, #{noteDescription}, #{username})")
+    @Select("SELECT * FROM NOTES WHERE userid = #{userId}")
+    List<Note> getNotesByUserId(Integer userId);
+
+    @Insert("INSERT INTO NOTES (noteTitle, noteDescription, userId) VALUES (#{noteTitle}, #{noteDescription}, #{userId})")
     @Options(useGeneratedKeys = true, keyProperty = "noteId")
     int addNote(Note note);
 }

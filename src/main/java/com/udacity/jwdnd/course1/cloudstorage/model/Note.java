@@ -4,14 +4,7 @@ public class Note {
     Integer noteId;
     String noteTitle;
     String noteDescription;
-    String username;
-
-    public Note(Integer noteId, String noteTitle, String noteDescription, String username) {
-        this.noteId = noteId;
-        this.noteTitle = noteTitle;
-        this.noteDescription = noteDescription;
-        this.username = username;
-    }
+    Integer userId;
 
     public Integer getNoteId() {
         return noteId;
@@ -37,13 +30,11 @@ public class Note {
         this.noteDescription = noteDescription;
     }
 
-    public String getUsername() {
-        return username;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
-
-
 }
