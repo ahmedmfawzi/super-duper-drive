@@ -12,12 +12,10 @@ import java.util.List;
 public class NoteService {
 
     private NoteMapper noteMapper;
-    private UserMapper userMapper;
 
-    public NoteService(NoteMapper noteMapper, UserMapper userMapper)
+    public NoteService(NoteMapper noteMapper)
     {
         this.noteMapper = noteMapper;
-        this.userMapper = userMapper;
     }
 
     @PostConstruct
@@ -25,29 +23,16 @@ public class NoteService {
         System.out.println("Creating Note bean");
     }
 
-    public void addNote(String username, Note note) {
-        Note newNote = new Note();
-        newNote.setUserId(userMapper.getUser(username).getUserId());
-        System.out.println(userMapper.getUser(username).getUserId());
-        System.out.println(userMapper.getUser(username).getUsername());
-
-        newNote.setNoteTitle(note.getNoteTitle());
-        System.out.println(note.getNoteTitle());
-
-        newNote.setNoteDescription(note.getNoteDescription());
-        System.out.println(note.getNoteDescription());
-
-        noteMapper.addNote(newNote);
+    public void addNote(Note note) {
+        noteMapper.addNote(note);
     }
 
     public List<Note> getAllNotes() {
         return noteMapper.getAllNotes();
     }
 
-    public List<Note> getNotesByUserId(String username) {
+    public List<Note> getNotesByUserId(Integer userId) {
         try {
-            Integer userId = userMapper.getUser(username).getUserId();
-            System.out.println("Used ID: " + userId.toString());
             return noteMapper.getNotesByUserId(userId);
         }
         catch (Exception e) {

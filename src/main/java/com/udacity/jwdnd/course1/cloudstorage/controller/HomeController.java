@@ -4,6 +4,7 @@ import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
+import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,16 +15,20 @@ import org.springframework.web.bind.annotation.*;
 public class HomeController {
 
     private NoteService noteService;
+    private UserService userService;
 
-    public HomeController(NoteService noteService) {
+    public HomeController(NoteService noteService, UserService userService) {
         this.noteService = noteService;
+        this.userService = userService;
     }
 
     @GetMapping("/home")
-    public String getHomePage(Authentication authentication, Note note, Model model) {
+    public String getHomePage(Authentication authentication, Model model) {
+
+        User user = userService.getUser(authentication.getName());
 
         // Adding the needed data for main page
-        model.addAttribute("notes", this.noteService.getNotesByUserId(authentication.getName()));
+        model.addAttribute("notes", this.noteService.getNotesByUserId(user.getUserId()));
 
         // Adding needed attributes for the home page tabs visualization (Initial focus is on files-tab)
         model.addAttribute("filestab", "true");
@@ -43,10 +48,13 @@ public class HomeController {
 
     @PostMapping("/note")
     public String postNote(Authentication authentication, Note note, Model model) {
-        this.noteService.addNote(authentication.getName(), note);
+
+        User user = userService.getUser(authentication.getName());
+        this.noteService.addNote(new Note(null, note.getNoteTitle(), note.getNoteDescription(), user.getUserId()));
         note.setNoteTitle("");
         note.setNoteDescription("");
-        model.addAttribute("notes", this.noteService.getNotesByUserId(authentication.getName()));
+
+        model.addAttribute("notes", this.noteService.getNotesByUserId(user.getUserId()));
 
         model.addAttribute("files-tab", "false");
         model.addAttribute("notes-tab", "ture");
