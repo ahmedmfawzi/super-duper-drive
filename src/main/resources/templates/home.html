@@ -120,7 +120,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="modal fade" id="deleteNoteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -134,7 +133,7 @@
                                         <form id="delete-note-form" th:object="${note}" action="#" th:action="@{/note/delete}" th:method="POST">
                                             <input type="hidden" name="deleteNoteId" id="delete-note-id" th:field="*{noteId}">
                                             <div class="form-group">
-                                                <label class="col-form-label">Are you sure you want to delete below note?</label>
+                                                <label class="col-form-label">Are you sure you want to proceed with deleting the note?</label>
                                             </div>
                                             <button id="deleteNoteSubmit" type="submit" class="d-none"></button>
                                         </form>
@@ -148,7 +147,6 @@
                         </div>
 
                     </div>
-
                     <div th:class="${credentialscontentclass}" id="nav-credentials" role="tabpanel" aria-labelledby="nav-credentials-tab">
                         <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showCredentialModal()">
                             + Add a New Credential
@@ -234,6 +232,14 @@
                 $('#delete-note-id').val(noteId ? noteId : '');
                 $('#deleteNoteModal').modal('show');
             }
+
+            // Keeping the message result for sometime and then hiding it
+            setTimeout(() => {
+                const successMsg = document.getElementById('success-msg');
+
+                // hides element (still takes up space on page)
+                successMsg.style.display = 'none';
+            }, 3000);
 
             // For opening the credentials modal
             function showCredentialModal(credentialId, url, username, password) {

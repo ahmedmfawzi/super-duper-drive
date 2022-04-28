@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @Controller
 public class HomeController {
 
@@ -41,7 +43,7 @@ public class HomeController {
         }
 
         // Adding needed attributes for the home page tabs visualization (Initial focus is on files-tab)
-        if (selectedTab == "files") {
+        if (Objects.equals(selectedTab, "files")) {
             model.addAttribute("filestab", "true");
             model.addAttribute("notestab", "false");
             model.addAttribute("credentialstab", "false");
@@ -54,7 +56,7 @@ public class HomeController {
             model.addAttribute("notescontentclass", "tab-pane fade");
             model.addAttribute("credentialscontentclass", "tab-pane fade");
         }
-        else if (selectedTab == "notes") {
+        else if (Objects.equals(selectedTab, "notes")) {
             model.addAttribute("filestab", "false");
             model.addAttribute("notestab", "true");
             model.addAttribute("credentialstab", "false");
@@ -67,7 +69,7 @@ public class HomeController {
             model.addAttribute("notescontentclass", "tab-pane fade show active");
             model.addAttribute("credentialscontentclass", "tab-pane fade");
         }
-        else if (selectedTab == "credentials") {
+        else if (Objects.equals(selectedTab, "credentials")) {
             model.addAttribute("filestab", "false");
             model.addAttribute("notestab", "false");
             model.addAttribute("credentialstab", "true");
@@ -91,10 +93,8 @@ public class HomeController {
 
         User user = userService.getUser(authentication.getName());
 
-        // Remove: To check the note id communicated with update vs add
         if (note.getNoteId() == null) {
             // This is a new note
-            System.out.println("Note Id is NULL ");
             noteService.createNote(new Note(null, note.getNoteTitle(), note.getNoteDescription(), user.getUserId()));
 
             selectedTab = "notes";
@@ -114,10 +114,13 @@ public class HomeController {
     }
 
     @PostMapping("/note/delete")
-    public String deleteNote(Authentication authentication, @ModelAttribute("note") Note note) {
+    public String deleteNote(@ModelAttribute("note") Note note) {
 
         System.out.println("Delete note with ID : " + note.getNoteId());
         noteService.deleteNote(note);
+
+        selectedTab = "notes";
+        successMessage = "Note was successfully deleted!";
 
         return "redirect:/home";
     }
