@@ -16,6 +16,14 @@ public class NoteService {
         this.noteMapper = noteMapper;
     }
 
+    public List<Note> getAllNotes() {
+        return noteMapper.getAllNotes();
+    }
+
+    public List<Note> getNotesByUserId(Integer userId) {
+        return noteMapper.getNotesByUserId(userId);
+    }
+
     public void createNote(Note note) {
         noteMapper.createNote(note);
     }
@@ -26,19 +34,5 @@ public class NoteService {
 
     public void deleteNote(Note note) {
         noteMapper.deleteNote(note);
-    }
-
-    public List<Note> getAllNotes() {
-        return noteMapper.getAllNotes();
-    }
-
-    public List<Note> getNotesByUserId(Integer userId) {
-        try {
-            return noteMapper.getNotesByUserId(userId);
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
     }
 }

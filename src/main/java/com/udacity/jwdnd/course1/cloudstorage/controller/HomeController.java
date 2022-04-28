@@ -1,7 +1,9 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
+import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.security.core.Authentication;
@@ -14,25 +16,28 @@ import java.util.Objects;
 @Controller
 public class HomeController {
 
+    public static String selectedTab;
+    public static String successMessage;
     private final NoteService noteService;
+    private final CredentialService credentialService;
     private final UserService userService;
-    private String selectedTab;
-    private String successMessage;
 
-    public HomeController(NoteService noteService, UserService userService) {
+    public HomeController(NoteService noteService, UserService userService, CredentialService credentialService) {
         this.noteService = noteService;
         this.userService = userService;
-        this.selectedTab = "files"; // setting files as the default selected tab
-        this.successMessage = null;
+        this.credentialService = credentialService;
+        selectedTab = "files"; // setting files as the default selected tab
+        successMessage = null;
     }
 
     @GetMapping("/home")
-    public String getHomePage(Authentication authentication, @ModelAttribute("note") Note note, Model model) {
+    public String getHomePage(Authentication authentication, @ModelAttribute("note") Note note, @ModelAttribute("credential") Credential credential, Model model) {
 
         User user = userService.getUser(authentication.getName());
 
         // Adding the needed data for main page
         model.addAttribute("notes", noteService.getNotesByUserId(user.getUserId()));
+        model.addAttribute("credentials", credentialService.getCredentialsByUserId(user.getUserId()));
 
         // Success Message Check
         if (successMessage != null) {
@@ -84,41 +89,6 @@ public class HomeController {
         successMessage = null;
 
         return "home";
-    }
-
-    @PostMapping("/note")
-    public String createNote(Authentication authentication, @ModelAttribute("note") Note note) {
-
-        User user = userService.getUser(authentication.getName());
-
-        noteService.createNote(new Note(null, note.getNoteTitle(), note.getNoteDescription(), user.getUserId()));
-
-        selectedTab = "notes";
-        successMessage = "Your note was successfully added!";
-
-        return "redirect:/home";
-    }
-
-    @RequestMapping(value ="/note", method = { RequestMethod.PATCH , RequestMethod.GET })
-    public String updateNote(@ModelAttribute("note") Note note) {
-
-        noteService.updateNote(note);
-
-        selectedTab = "notes";
-        successMessage = "Your note was successfully updated!";
-
-        return "redirect:/home";
-    }
-
-    @RequestMapping(value ="/note", method =  RequestMethod.DELETE )
-    public String deleteNote(@ModelAttribute("note") Note note) {
-
-        noteService.deleteNote(note);
-
-        selectedTab = "notes";
-        successMessage = "Note was successfully deleted!";
-
-        return "redirect:/home";
     }
 
 }
