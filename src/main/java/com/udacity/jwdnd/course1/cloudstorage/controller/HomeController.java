@@ -1,11 +1,9 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
-import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -89,34 +87,32 @@ public class HomeController {
     }
 
     @PostMapping("/note")
-    public String postNote(Authentication authentication, @ModelAttribute("note") Note note) {
+    public String createNote(Authentication authentication, @ModelAttribute("note") Note note) {
 
         User user = userService.getUser(authentication.getName());
 
-        if (note.getNoteId() == null) {
-            // This is a new note
-            noteService.createNote(new Note(null, note.getNoteTitle(), note.getNoteDescription(), user.getUserId()));
+        noteService.createNote(new Note(null, note.getNoteTitle(), note.getNoteDescription(), user.getUserId()));
 
-            selectedTab = "notes";
-            successMessage = "Your note was successfully added!";
-
-        }
-        else {
-            // This is an existing note
-            System.out.println("Note Id : " + note.getNoteId().toString());
-            noteService.updateNote(note);
-
-            selectedTab = "notes";
-            successMessage = "Your note was successfully updated!";
-        }
+        selectedTab = "notes";
+        successMessage = "Your note was successfully added!";
 
         return "redirect:/home";
     }
 
-    @PostMapping("/note/delete")
+    @RequestMapping(value ="/note", method = { RequestMethod.PATCH , RequestMethod.GET })
+    public String updateNote(@ModelAttribute("note") Note note) {
+
+        noteService.updateNote(note);
+
+        selectedTab = "notes";
+        successMessage = "Your note was successfully updated!";
+
+        return "redirect:/home";
+    }
+
+    @RequestMapping(value ="/note", method =  RequestMethod.DELETE )
     public String deleteNote(@ModelAttribute("note") Note note) {
 
-        System.out.println("Delete note with ID : " + note.getNoteId());
         noteService.deleteNote(note);
 
         selectedTab = "notes";

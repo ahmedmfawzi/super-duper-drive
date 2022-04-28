@@ -130,7 +130,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form id="delete-note-form" th:object="${note}" action="#" th:action="@{/note/delete}" th:method="POST">
+                                        <form id="delete-note-form" th:object="${note}" action="#" th:action="@{/note}" th:method="delete">
                                             <input type="hidden" name="deleteNoteId" id="delete-note-id" th:field="*{noteId}">
                                             <div class="form-group">
                                                 <label class="col-form-label">Are you sure you want to proceed with deleting the note?</label>
@@ -223,6 +223,7 @@
         <script type="text/javascript">
             // For opening the note modal
             function showNoteModal(noteId, noteTitle, noteDescription) {
+                $('#note-form').attr("method", noteId ? 'PATCH' : 'POST')
                 $('#note-id').val(noteId ? noteId : '');
                 $('#note-title').val(noteTitle ? noteTitle : '');
                 $('#note-description').val(noteDescription ? noteDescription : '');
