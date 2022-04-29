@@ -17,6 +17,8 @@ public class HomeController {
 
     public static String selectedTab;
     public static String successMessage;
+    public static String errorMessage;
+
     private final NoteService noteService;
     private final CredentialService credentialService;
     private final FileService fileService;
@@ -31,6 +33,7 @@ public class HomeController {
         this.encryptionService = encryptionService;
         selectedTab = "files"; // setting files as the default selected tab
         successMessage = null;
+        errorMessage = null;
     }
 
     @GetMapping("/home")
@@ -49,7 +52,13 @@ public class HomeController {
         // Success Message Check
         if (successMessage != null) {
             model.addAttribute("showSuccessMessage", true);
+            model.addAttribute("showErrorMessage", false);
             model.addAttribute("successMessage", successMessage);
+        }
+        else if (errorMessage != null) {
+            model.addAttribute("showSuccessMessage", false);
+            model.addAttribute("showErrorMessage", true);
+            model.addAttribute("errorMessage", errorMessage);
         }
 
         // Adding needed attributes for the home page tabs visualization (Initial focus is on files-tab)
@@ -94,6 +103,7 @@ public class HomeController {
         }
 
         successMessage = null;
+        errorMessage = null;
 
         return "home";
     }

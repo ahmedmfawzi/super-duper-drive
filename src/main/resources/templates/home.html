@@ -24,8 +24,11 @@
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
-                    <div id="success-msg" th:if="${showSuccessMessage}" class="alert alert-dark" th:text="${successMessage}">
-
+                    <div id="success-msg" th:if="${showSuccessMessage}" class="alert alert-success fill-parent">
+                        <h5 class="display-5" id="success" th:text="${successMessage}"></h5>
+                    </div>
+                    <div id="error-msg" th:if="${showErrorMessage}" class="alert alert-danger fill-parent">
+                        <h5 class="display-5" id="error" th:text="${errorMessage}"></h5>
                     </div>
                     <div th:class="${filecontentclass}" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
                         <form action="#" th:action="@{/file}" enctype="multipart/form-data" th:method="POST">

@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class FileController {
@@ -24,9 +23,11 @@ public class FileController {
         this.userService = userService;
     }
 
-
     @GetMapping("/file")
-    public ResponseEntity<byte[]> viewFile(RedirectAttributes redirectAttributes, Authentication authentication, Integer fileId) {
+    public ResponseEntity<byte[]> viewFile(Authentication authentication, Integer fileId) {
+
+        User user = userService.getUser(authentication.getName());
+
         File file = fileService.getFileByFileId(fileId);
         String filename = file.getFileName();
         ResponseEntity<byte[]> responseEntity = ResponseEntity.ok()
