@@ -1,11 +1,10 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
+import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
-import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
-import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
-import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
+import com.udacity.jwdnd.course1.cloudstorage.services.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,24 +19,32 @@ public class HomeController {
     public static String successMessage;
     private final NoteService noteService;
     private final CredentialService credentialService;
+    private final FileService fileService;
     private final UserService userService;
+    private final EncryptionService encryptionService;
 
-    public HomeController(NoteService noteService, UserService userService, CredentialService credentialService) {
+    public HomeController(NoteService noteService, UserService userService, CredentialService credentialService, FileService fileService, EncryptionService encryptionService) {
         this.noteService = noteService;
         this.userService = userService;
         this.credentialService = credentialService;
+        this.fileService = fileService;
+        this.encryptionService = encryptionService;
         selectedTab = "files"; // setting files as the default selected tab
         successMessage = null;
     }
 
     @GetMapping("/home")
-    public String getHomePage(Authentication authentication, @ModelAttribute("note") Note note, @ModelAttribute("credential") Credential credential, Model model) {
+    public String getHomePage(Authentication authentication, @ModelAttribute("file") File file, @ModelAttribute("note") Note note, @ModelAttribute("credential") Credential credential, Model model) {
 
         User user = userService.getUser(authentication.getName());
 
         // Adding the needed data for main page
         model.addAttribute("notes", noteService.getNotesByUserId(user.getUserId()));
         model.addAttribute("credentials", credentialService.getCredentialsByUserId(user.getUserId()));
+        model.addAttribute("files", fileService.getFilesByUserId(user.getUserId()));
+
+        // Adding Encryption Service
+        model.addAttribute("encryptionService", encryptionService);
 
         // Success Message Check
         if (successMessage != null) {

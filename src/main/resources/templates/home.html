@@ -28,7 +28,7 @@
 
                     </div>
                     <div th:class="${filecontentclass}" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
-                        <form action="#" enctype="multipart/form-data" method="POST">
+                        <form action="#" th:action="@{/file}" enctype="multipart/form-data" th:method="POST">
                             <div class="container">
                                 <div class="row" style="margin: 1em;">
                                     <div class="col-sm-2">
@@ -52,16 +52,43 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
+                                <tr th:each="file : ${files}">
                                     <td>
-                                        <a target="_blank" class="btn btn-success">View</a>
-                                        <a  class="btn btn-danger">Delete</a>
+                                        <a th:href="@{'/file?fileId=' + ${file.getFileId()}}" target="_blank" class="btn btn-success">View</a>
+                                        <button type="button" class="btn btn-danger" th:onclick="showDeleteFileModal([[${file.getFileId()}]])">Delete</button>
                                     </td>
-                                    <th scope="row">ExampleFile.txt</th>
+                                    <th scope="row" th:text="${file.getFileName()}"></th>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
+
+                        <div class="modal fade" id="deleteFileModal" tabindex="-1" role="dialog" aria-labelledby="deleteFileModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteFileModalLabel">Delete File</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="delete-file-form" th:object="${file}" action="#" th:action="@{/file}" th:method="delete">
+                                            <input type="hidden" name="deleteFileId" id="delete-file-id" th:field="*{fileId}">
+                                            <div class="form-group">
+                                                <label class="col-form-label">Are you sure you want to proceed with deleting the file?</label>
+                                            </div>
+                                            <button id="deleteFileSubmit" type="submit" class="d-none"></button>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-danger" onclick="$('#deleteFileSubmit').click();">Delete Note</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                     <div th:class="${notescontentclass}" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
                         <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showNoteModal()">
@@ -166,7 +193,7 @@
                                 <tbody>
                                 <tr th:each="credential : ${credentials}">
                                     <td>
-                                        <button type="button" class="btn btn-success" th:onclick="showCredentialModal([[${credential.getCredentialId()}]],[[${credential.getUrl()}]],[[${credential.getUsername()}]],[[${credential.getPassword()}]])">Edit</button>
+                                        <button type="button" class="btn btn-success" th:onclick="showCredentialModal([[${credential.getCredentialId()}]],[[${credential.getUrl()}]],[[${credential.getUsername()}]],[[${encryptionService.decryptValue(credential.getPassword(), credential.getKey())}]])">Edit</button>
                                         <button type="button" class="btn btn-danger" th:onclick="showDeleteCredentialModal([[${credential.getCredentialId()}]])">Delete</button>
                                     </td>
                                     <th scope="row" th:text="${credential.url}"></th>
@@ -212,7 +239,7 @@
                             </div>
                         </div>
 
-                        <div class="modal fade" id="deleteCredentialModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="deleteCredentialModal" tabindex="-1" role="dialog" aria-labelledby="deleteCredentialModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -225,7 +252,7 @@
                                         <form id="delete-credential-form" th:object="${credential}" action="#" th:action="@{/credential}" th:method="delete">
                                             <input type="hidden" name="deleteNoteId" id="delete-credential-id" th:field="*{credentialId}">
                                             <div class="form-group">
-                                                <label class="col-form-label">Are you sure you want to proceed with deleting the note?</label>
+                                                <label class="col-form-label">Are you sure you want to proceed with deleting the credential?</label>
                                             </div>
                                             <button id="deleteCredentialSubmit" type="submit" class="d-none"></button>
                                         </form>
@@ -237,7 +264,6 @@
                                 </div>
                             </div>
                         </div>
-
 
                     </div>
                 </div>
@@ -276,6 +302,11 @@
             function showDeleteCredentialModal(credentialId) {
                 $('#delete-credential-id').val(credentialId ? credentialId : '');
                 $('#deleteCredentialModal').modal('show');
+            }
+
+            function showDeleteFileModal(fileId) {
+                $('#delete-file-id').val(fileId ? fileId : '');
+                $('#deleteFileModal').modal('show');
             }
 
             // Keeping the message result for sometime and then hiding it

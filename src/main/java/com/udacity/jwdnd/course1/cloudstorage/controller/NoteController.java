@@ -27,7 +27,9 @@ public class NoteController {
 
         User user = userService.getUser(authentication.getName());
 
-        noteService.createNote(new Note(null, note.getNoteTitle(), note.getNoteDescription(), user.getUserId()));
+        //noteService.createNote(new Note(null, note.getNoteTitle(), note.getNoteDescription(), user.getUserId()));
+        note.setUserId(user.getUserId());
+        noteService.createNote(note);
 
         HomeController.selectedTab = "notes";
         HomeController.successMessage = "Note was successfully added!";

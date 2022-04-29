@@ -24,7 +24,4 @@ public interface CredentialMapper {
     @Delete("DELETE FROM CREDENTIALS WHERE credentialId=#{credentialId}")
     int deleteCredential(Credential credential);
 
-
-
-
 }
