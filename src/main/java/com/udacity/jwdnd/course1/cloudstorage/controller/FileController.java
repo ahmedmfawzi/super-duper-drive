@@ -41,7 +41,9 @@ public class FileController {
 
         User user = userService.getUser(authentication.getName());
 
-        fileService.createFile(fileUpload, user.getUserId());
+        if (!fileUpload.isEmpty()) {
+            fileService.createFile(fileUpload, user.getUserId());
+        }
 
         HomeController.selectedTab = "files";
         HomeController.successMessage = "File was successfully added!";
