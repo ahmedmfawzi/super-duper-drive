@@ -42,12 +42,26 @@ public class FileController {
 
         User user = userService.getUser(authentication.getName());
 
-        if (!fileUpload.isEmpty()) {
-            fileService.createFile(fileUpload, user.getUserId());
+        try {
+            if (!fileUpload.isEmpty()) {
+                if (fileService.IsFileNameAvailable(fileUpload, user.getUserId())) {
+                    fileService.createFile(fileUpload, user.getUserId());
+                    HomeController.selectedTab = "files";
+                    HomeController.successMessage = "File was successfully added!";
+                } else {
+                    HomeController.selectedTab = "files";
+                    HomeController.errorMessage = "File already exists!";
+                }
+            } else {
+                HomeController.selectedTab = "files";
+                HomeController.errorMessage = "There is no file to upload!";
+            }
         }
-
-        HomeController.selectedTab = "files";
-        HomeController.successMessage = "File was successfully added!";
+        catch (Exception ex) {
+            System.out.print(ex.getMessage());
+            HomeController.selectedTab = "files";
+            HomeController.errorMessage = "There was an error uploading file!";
+        }
 
         return "redirect:/home";
     }

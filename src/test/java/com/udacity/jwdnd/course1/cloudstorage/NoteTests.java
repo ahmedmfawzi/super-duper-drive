@@ -84,14 +84,11 @@ class NoteTests {
         //Assertions.assertTrue(driver.findElement(By.id("success-msg")).getText().contains("You successfully signed up!"));
     }
 
-
-
     /**
      * PLEASE DO NOT DELETE THIS method.
      * Helper method for Udacity-supplied sanity checks.
      **/
-    private void doLogIn(String userName, String password)
-    {
+    private void doLogIn(String userName, String password) {
         // Log in to our dummy account.
         driver.get("http://localhost:" + this.port + "/login");
         WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
@@ -114,11 +111,9 @@ class NoteTests {
 
     }
 
-
     /**
      * Test Note is created and displayed
      */
-
     @Test
     public void testCreateNote() {
         // Create a test account
@@ -275,6 +270,7 @@ class NoteTests {
         noteDelete.click();
 
         Assertions.assertTrue(driver.findElement(By.id("success-msg")).getText().contains("Note was successfully deleted!"));
+        Assertions.assertFalse(driver.findElement(By.id("noteTable")).getText().contains("New Note 2"));
 
     }
 

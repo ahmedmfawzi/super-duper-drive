@@ -3,9 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
         <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}">
-
         <title>Home</title>
     </head>
     <body class="p-3 mb-2 bg-light text-black">
@@ -19,8 +17,8 @@
                 <nav style="clear: right;">
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <a th:class="${filestabclass}" id="nav-files-tab" data-toggle="tab" href="#nav-files" role="tab" aria-controls="nav-files" aria-selected="[[${filestab}]]">Files</a>
-                        <a th:class="${notestabclass}" class="nav-item nav-link active" id="nav-notes-tab" data-toggle="tab" href="#nav-notes" role="tab" aria-controls="nav-notes" aria-selected="[[${notestab}]]">Notes</a>
-                        <a th:class="${credentialstabclass}" class="nav-item nav-link" id="nav-credentials-tab" data-toggle="tab" href="#nav-credentials" role="tab" aria-controls="nav-credentials" aria-selected="[[${credentialstab}]]">Credentials</a>
+                        <a th:class="${notestabclass}" id="nav-notes-tab" class="nav-item nav-link active" data-toggle="tab" href="#nav-notes" role="tab" aria-controls="nav-notes" aria-selected="[[${notestab}]]">Notes</a>
+                        <a th:class="${credentialstabclass}" id="nav-credentials-tab" class="nav-item nav-link" data-toggle="tab" href="#nav-credentials" role="tab" aria-controls="nav-credentials" aria-selected="[[${credentialstab}]]">Credentials</a>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
@@ -86,7 +84,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-danger" onclick="$('#deleteFileSubmit').click();">Delete Note</button>
+                                        <button type="button" class="btn btn-danger" onclick="$('#deleteFileSubmit').click();">Delete File</button>
                                     </div>
                                 </div>
                             </div>
@@ -150,7 +148,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="modal fade" id="deleteNoteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -179,12 +176,12 @@
 
                     </div>
                     <div th:class="${credentialscontentclass}" id="nav-credentials" role="tabpanel" aria-labelledby="nav-credentials-tab">
-                        <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showCredentialModal()">
+                        <button id="btn-show-credential-modal" style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showCredentialModal()">
                             + Add a New Credential
                         </button>
 
                         <div class="table-responsive">
-                            <table class="table table-striped" th:object="${credentials}" id="credentialTable">
+                            <table class="table table-striped" id="credentialTable">
                                 <thead>
                                     <tr>
                                         <th style="width: 20%" scope="col"></th>
@@ -236,7 +233,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary" onclick="$('#credentialSubmit').click();">Save changes</button>
+                                        <button id="btn-submit-credential"  type="button" class="btn btn-primary" onclick="$('#credentialSubmit').click();">Save changes</button>
                                     </div>
                                 </div>
                             </div>
@@ -246,14 +243,14 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="deleteCredentialModalLabel">Delete Note</h5>
+                                        <h5 class="modal-title" id="deleteCredentialModalLabel">Delete Credential</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
                                     <div class="modal-body">
                                         <form id="delete-credential-form" th:object="${credential}" action="#" th:action="@{/credential}" th:method="delete">
-                                            <input type="hidden" name="deleteNoteId" id="delete-credential-id" th:field="*{credentialId}">
+                                            <input type="hidden" name="deleteCredentialId" id="delete-credential-id" th:field="*{credentialId}">
                                             <div class="form-group">
                                                 <label class="col-form-label">Are you sure you want to proceed with deleting the credential?</label>
                                             </div>
@@ -262,7 +259,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-danger" onclick="$('#deleteCredentialSubmit').click();">Delete Note</button>
+                                        <button id="btn-delete-credential" type="button" class="btn btn-danger" onclick="$('#deleteCredentialSubmit').click();">Delete Credential</button>
                                     </div>
                                 </div>
                             </div>
@@ -318,6 +315,13 @@
 
                 // hides element (still takes up space on page)
                 successMsg.style.display = 'none';
+            }, 3000);
+            // Keeping the message result for sometime and then hiding it
+            setTimeout(() => {
+                const errorMsg = document.getElementById('error-msg');
+
+                // hides element (still takes up space on page)
+                errorMsg.style.display = 'none';
             }, 3000);
         </script>
     </body>

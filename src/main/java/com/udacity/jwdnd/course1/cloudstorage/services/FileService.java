@@ -29,7 +29,12 @@ public class FileService {
         return fileMapper.getFileByFileId(userId);
     }
 
+    public boolean IsFileNameAvailable(MultipartFile file, Integer userId) {
+        return fileMapper.getFileName(file.getOriginalFilename(), userId) == null;
+    }
+
     public int createFile(MultipartFile file, Integer userId)  {
+
         byte[] data = null;
 
         try {

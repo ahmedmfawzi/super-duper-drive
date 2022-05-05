@@ -15,11 +15,11 @@ public interface NoteMapper {
 
     @Insert("INSERT INTO NOTES (noteTitle, noteDescription, userId) VALUES (#{noteTitle}, #{noteDescription}, #{userId})")
     @Options(useGeneratedKeys = true, keyProperty = "noteId")
-    int createNote(Note note);
+    Integer createNote(Note note);
 
-    @Update("UPDATE NOTES SET noteTitle=#{noteTitle}, noteDescription=#{noteDescription} WHERE noteId=#{noteId}")
-    int updateNote(Note note);
+    @Update("UPDATE NOTES SET noteTitle=#{noteTitle}, noteDescription=#{noteDescription} WHERE noteId=#{noteId} AND userId=#{userId}")
+    Integer updateNote(Note note);
 
-    @Delete("DELETE FROM NOTES WHERE noteId=#{noteId}")
-    int deleteNote(Note note);
+    @Delete("DELETE FROM NOTES WHERE noteId=#{noteId} AND userId=#{userId}")
+    Integer deleteNote(Note note);
 }

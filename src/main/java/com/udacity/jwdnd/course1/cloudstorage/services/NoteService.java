@@ -28,11 +28,11 @@ public class NoteService {
         noteMapper.createNote(note);
     }
 
-    public void updateNote(Note note) {
-        noteMapper.updateNote(note);
+    public Integer updateNote(Note note) {
+        return noteMapper.updateNote(note);
     }
 
-    public void deleteNote(Note note) {
-        noteMapper.deleteNote(note);
+    public Integer deleteNote(Note note) {
+        return noteMapper.deleteNote(note);
     }
 }

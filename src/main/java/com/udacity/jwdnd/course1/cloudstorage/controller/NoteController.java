@@ -38,23 +38,51 @@ public class NoteController {
     }
 
     @RequestMapping(value ="/note", method = { RequestMethod.PATCH , RequestMethod.GET })
-    public String updateNote(@ModelAttribute("note") Note note) {
+    public String updateNote(Authentication authentication, @ModelAttribute("note") Note note) {
 
-        noteService.updateNote(note);
+        User user = userService.getUser(authentication.getName());
+        note.setUserId(user.getUserId());
 
-        HomeController.selectedTab = "notes";
-        HomeController.successMessage = "Note was successfully updated!";
+        try {
+            if(noteService.updateNote(note) == 1){
+                HomeController.selectedTab = "notes";
+                HomeController.successMessage = "Note was successfully updated!";
+            }
+            else {
+                HomeController.selectedTab = "notes";
+                HomeController.errorMessage = "ERROR: Note was was not updated!";
+            }
+        }
+        catch (Exception ex) {
+            HomeController.selectedTab = "notes";
+            HomeController.errorMessage = "ERROR: Note was was not updated!";
+        }
+
 
         return "redirect:/home";
     }
 
     @RequestMapping(value ="/note", method = RequestMethod.DELETE )
-    public String deleteNote(@ModelAttribute("note") Note note) {
+    public String deleteNote(Authentication authentication, @ModelAttribute("note") Note note) {
 
-        noteService.deleteNote(note);
+        User user = userService.getUser(authentication.getName());
+        note.setUserId(user.getUserId());
 
-        HomeController.selectedTab = "notes";
-        HomeController.successMessage = "Note was successfully deleted!";
+        try {
+            if(noteService.deleteNote(note) == 1) {
+                HomeController.selectedTab = "notes";
+                HomeController.successMessage = "Note was successfully deleted!";
+            }
+            else {
+                HomeController.selectedTab = "notes";
+                HomeController.errorMessage = "ERROR: Note was not deleted!";
+            }
+
+        }
+        catch (Exception ex) {
+            HomeController.selectedTab = "notes";
+            HomeController.errorMessage = "ERROR: Note was not deleted!";
+        }
 
         return "redirect:/home";
     }
