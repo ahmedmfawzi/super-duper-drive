@@ -33,42 +33,74 @@ public class CredentialController {
 
         User user = userService.getUser(authentication.getName());
 
-        String encodedKey = encryptionService.getEncodedKey();
+        try {
+            String encodedKey = encryptionService.getEncodedKey();
 
-        credential.setKey(encodedKey);
-        credential.setPassword(encryptionService.encryptValue(credential.getPassword(), encodedKey));
-        credential.setUserId(user.getUserId());
-        credentialService.createCredential(credential);
+            credential.setKey(encodedKey);
+            credential.setPassword(encryptionService.encryptValue(credential.getPassword(), encodedKey));
+            credential.setUserId(user.getUserId());
+            credentialService.createCredential(credential);
 
-        HomeController.selectedTab = "credentials";
-        HomeController.successMessage = "Credential was successfully added!";
+            HomeController.selectedTab = "credentials";
+            HomeController.successMessage = "SUCCESS: Credential was successfully added!";
+        }
+        catch (Exception ex){
+            HomeController.selectedTab = "credentials";
+            HomeController.errorMessage = "ERROR: Credential was not added!";
+        }
 
         return "redirect:/home";
     }
 
     @RequestMapping(value ="/credential", method = { RequestMethod.PATCH , RequestMethod.GET })
-    public String updateCredential(@ModelAttribute("credential") Credential credential) {
+    public String updateCredential(Authentication authentication, @ModelAttribute("credential") Credential credential) {
 
-        String encodedKey = encryptionService.getEncodedKey();
+        User user = userService.getUser(authentication.getName());
+        credential.setUserId(user.getUserId());
 
-        credential.setKey(encodedKey);
-        credential.setPassword(encryptionService.encryptValue(credential.getPassword(), encodedKey));
+        try {
+            String encodedKey = encryptionService.getEncodedKey();
 
-        credentialService.updateCredential(credential);
+            credential.setKey(encodedKey);
+            credential.setPassword(encryptionService.encryptValue(credential.getPassword(), encodedKey));
 
-        HomeController.selectedTab = "credentials";
-        HomeController.successMessage = "Credential was successfully updated!";
+            if(credentialService.updateCredential(credential) == 1) {
+                HomeController.selectedTab = "credentials";
+                HomeController.successMessage = "SUCCESS: Credential was successfully updated!";
+            }
+            else {
+                HomeController.selectedTab = "credentials";
+                HomeController.errorMessage = "ERROR: Credential was not updated!";
+            }
+        }
+        catch (Exception ex){
+            HomeController.selectedTab = "credentials";
+            HomeController.errorMessage = "ERROR: Credential was not updated!";
+        }
 
         return "redirect:/home";
     }
 
     @RequestMapping(value ="/credential", method = RequestMethod.DELETE )
-    public String deleteCredential(@ModelAttribute("credential") Credential credential) {
+    public String deleteCredential(Authentication authentication, @ModelAttribute("credential") Credential credential) {
 
-        credentialService.deleteCredential(credential);
+        User user = userService.getUser(authentication.getName());
+        credential.setUserId(user.getUserId());
 
-        HomeController.selectedTab = "credentials";
-        HomeController.successMessage = "Credential was successfully deleted!";
+        try {
+            if(credentialService.deleteCredential(credential) == 1) {
+                HomeController.selectedTab = "credentials";
+                HomeController.successMessage = "SUCCESS: Credential was successfully deleted!";
+            }
+            else {
+                HomeController.selectedTab = "credentials";
+                HomeController.errorMessage = "ERROR: Credential was not deleted!";
+            }
+        }
+        catch (Exception ex){
+            HomeController.selectedTab = "credentials";
+            HomeController.errorMessage = "ERROR: Credential was not deleted!";
+        }
 
         return "redirect:/home";
     }

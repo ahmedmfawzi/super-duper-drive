@@ -23,15 +23,15 @@ public class CredentialService {
         return credentialMapper.getCredentialsByUserId(userId);
     }
 
-    public int createCredential(Credential credential){
+    public Integer createCredential(Credential credential){
         return credentialMapper.createCredential(credential);
     }
 
-    public int updateCredential(Credential credential){
+    public Integer updateCredential(Credential credential){
         return credentialMapper.updateCredential(credential);
     }
 
-    public int deleteCredential(Credential credential){
+    public Integer deleteCredential(Credential credential){
         return credentialMapper.deleteCredential(credential);
     }
 }

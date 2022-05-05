@@ -47,20 +47,20 @@ public class FileController {
                 if (fileService.IsFileNameAvailable(fileUpload, user.getUserId())) {
                     fileService.createFile(fileUpload, user.getUserId());
                     HomeController.selectedTab = "files";
-                    HomeController.successMessage = "File was successfully added!";
+                    HomeController.successMessage = "SUCCESS: File was successfully added!";
                 } else {
                     HomeController.selectedTab = "files";
-                    HomeController.errorMessage = "File already exists!";
+                    HomeController.errorMessage = "ERROR: File already exists!";
                 }
             } else {
                 HomeController.selectedTab = "files";
-                HomeController.errorMessage = "There is no file to upload!";
+                HomeController.errorMessage = "ERROR: There is no file to upload!";
             }
         }
         catch (Exception ex) {
             System.out.print(ex.getMessage());
             HomeController.selectedTab = "files";
-            HomeController.errorMessage = "There was an error uploading file!";
+            HomeController.errorMessage = "ERROR: There was an error adding file!";
         }
 
         return "redirect:/home";
@@ -69,10 +69,15 @@ public class FileController {
     @RequestMapping(value ="/file", method = RequestMethod.DELETE )
     public String deleteFile(@ModelAttribute("file") File file) {
 
-        fileService.deleteFile(file);
-
-        HomeController.selectedTab = "files";
-        HomeController.successMessage = "File was successfully deleted!";
+        try {
+            fileService.deleteFile(file);
+            HomeController.selectedTab = "files";
+            HomeController.successMessage = "SUCCESS: File was successfully deleted!";
+        }
+        catch (Exception ex) {
+            HomeController.selectedTab = "files";
+            HomeController.errorMessage = "ERROR: File was not deleted!";
+        }
 
         return "redirect:/home";
     }

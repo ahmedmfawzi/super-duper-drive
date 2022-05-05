@@ -27,12 +27,18 @@ public class NoteController {
 
         User user = userService.getUser(authentication.getName());
 
-        //noteService.createNote(new Note(null, note.getNoteTitle(), note.getNoteDescription(), user.getUserId()));
-        note.setUserId(user.getUserId());
-        noteService.createNote(note);
+        try {
+            note.setUserId(user.getUserId());
+            noteService.createNote(note);
 
-        HomeController.selectedTab = "notes";
-        HomeController.successMessage = "Note was successfully added!";
+            HomeController.selectedTab = "notes";
+            HomeController.successMessage = "SUCCESS: Note was successfully added!";
+
+        }
+        catch (Exception ex) {
+            HomeController.selectedTab = "notes";
+            HomeController.errorMessage = "ERROR: Note was not added!";
+        }
 
         return "redirect:/home";
     }
@@ -46,7 +52,7 @@ public class NoteController {
         try {
             if(noteService.updateNote(note) == 1){
                 HomeController.selectedTab = "notes";
-                HomeController.successMessage = "Note was successfully updated!";
+                HomeController.successMessage = "SUCCESS: Note was successfully updated!";
             }
             else {
                 HomeController.selectedTab = "notes";
@@ -71,7 +77,7 @@ public class NoteController {
         try {
             if(noteService.deleteNote(note) == 1) {
                 HomeController.selectedTab = "notes";
-                HomeController.successMessage = "Note was successfully deleted!";
+                HomeController.successMessage = "SUCCESS: Note was successfully deleted!";
             }
             else {
                 HomeController.selectedTab = "notes";
