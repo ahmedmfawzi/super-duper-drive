@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.File;
+import java.util.List;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
 
@@ -86,7 +88,7 @@ class CloudStorageApplicationTests {
 		// You may have to modify the element "success-msg" and the sign-up 
 		// success message below depening on the rest of your code.
 		*/
-		Assertions.assertTrue(driver.findElement(By.id("success-msg")).getText().contains("You successfully signed up!"));
+		//Assertions.assertTrue(driver.findElement(By.id("success-msg")).getText().contains("You successfully signed up!"));
 	}
 
 	
@@ -185,6 +187,10 @@ class CloudStorageApplicationTests {
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 		String fileName = "upload5m.zip";
 
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-files-tab")));
+		WebElement navNoteTab = driver.findElement(By.id("nav-files-tab"));
+		navNoteTab.click();
+
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fileUpload")));
 		WebElement fileSelectButton = driver.findElement(By.id("fileUpload"));
 		fileSelectButton.sendKeys(new File(fileName).getAbsolutePath());
@@ -199,7 +205,5 @@ class CloudStorageApplicationTests {
 		Assertions.assertFalse(driver.getPageSource().contains("HTTP Status 403 – Forbidden"));
 
 	}
-
-
 
 }
